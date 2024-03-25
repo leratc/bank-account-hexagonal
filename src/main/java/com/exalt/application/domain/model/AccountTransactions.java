@@ -39,7 +39,7 @@ public class AccountTransactions {
     }
 
     /**
-     * Calculates the balance by summing up the values of all activities within this window.
+     * Calculates the balance by summing up the values of all transactions in the interval
      */
     public BigDecimal calculateBalance(Long accountId) {
         BigDecimal depositBalance = accountTransactions.stream()

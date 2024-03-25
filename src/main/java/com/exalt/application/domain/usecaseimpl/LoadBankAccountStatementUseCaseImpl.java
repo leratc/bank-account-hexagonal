@@ -9,6 +9,11 @@ import jakarta.transaction.Transactional;
 @UseCase
 public class LoadBankAccountStatementUseCaseImpl implements LoadBankAccountStatementUseCase {
     private LoadBankAccountPort loadBankAccountPort;
+
+    public LoadBankAccountStatementUseCaseImpl(LoadBankAccountPort loadBankAccountPort) {
+        this.loadBankAccountPort = loadBankAccountPort;
+    }
+
     @Override
     public BankAccount loadBankAccountStatement(Long accountId) {
         return loadBankAccountPort.loadAccount(accountId);

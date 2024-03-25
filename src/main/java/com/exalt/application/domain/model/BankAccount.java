@@ -53,7 +53,8 @@ public class BankAccount {
         return this.baselineBalance.add(this.accountTransactions.calculateBalance(this.id));
     }
     private boolean isWithdrawalAuthorized(BankAccount account, BigDecimal withdraw) {
-        if (this.calculateBalance().add(this.overdraftAmountAuthorization).subtract(withdraw).compareTo(BigDecimal.ZERO) >= 0) {
+        BigDecimal resultingOperation = this.calculateBalance().add(this.overdraftAmountAuthorization).subtract(withdraw);
+        if (resultingOperation.compareTo(BigDecimal.ZERO) >= 0) {
             return true;
         }
         return false;

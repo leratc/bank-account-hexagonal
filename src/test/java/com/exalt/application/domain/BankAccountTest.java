@@ -21,15 +21,14 @@ class BankAccountTest {
 				.id(accountId)
 				.baselineBalance(BigDecimal.valueOf(555L))
 				.accountTransactions(new AccountTransactions(
-						Arrays.asList(AccountTransactionTestData.defaultDepositTransaction()
+						Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(999L)).build(),
-								AccountTransactionTestData.defaultDepositTransaction()
+								AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 										.amount(BigDecimal.valueOf(1L)).build())))
 				.build();
 
 		BigDecimal balance = account.calculateBalance();
-
-		assertThat(balance).isEqualTo(BigDecimal.valueOf(1555L));
+		assertThat(account.calculateBalance()).isEqualTo(BigDecimal.valueOf(1555L));
 	}
 
 	@Test
@@ -62,7 +61,7 @@ class BankAccountTest {
 						AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(1L)).build())))
 				.build();
-		boolean success = account.withdrawMoney(account,BigDecimal.valueOf(1556L));
+		boolean success = account.withdrawMoney(account,BigDecimal.valueOf(2556L));
 
 		assertThat(success).isFalse();
 		assertThat(account.getAccountTransactions().getAccountTransactions()).hasSize(2);
