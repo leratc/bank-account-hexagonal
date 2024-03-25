@@ -39,9 +39,9 @@ class AccountStatementTest {
 	void loadsAccount() {
 		BankAccount bankAccount = adapterUnderTest.loadAccount(1L);
 		assertThat(bankAccount.getAccountTransactionsInterval().getAccountTransactions()).hasSize(5);
-		assertThat(bankAccount.calculateBalance()).isEqualTo(new BigDecimal("1700.00"));
+		assertThat(bankAccount.calculateBalance()).isEqualTo(new BigDecimal("1700"));
 		// Only the first account transaction of a 100.00 deposit is older than one month.
-		assertThat(bankAccount.getBaselineBalance()).isEqualTo(new BigDecimal("100.00"));
+		assertThat(bankAccount.getBaselineBalance()).isEqualTo(new BigDecimal("100"));
 	}
 	@Test
 	@Sql("AccountStatementTest.sql")
@@ -50,9 +50,9 @@ class AccountStatementTest {
 		// test if BankConfigurationProperties provide the value of the depositBookletThreshold property (22950).
 		assertThat(bankAccount.getMaximumDepositAuthorization()).isEqualTo(new BigDecimal("22950"));
 		assertThat(bankAccount.getAccountTransactionsInterval().getAccountTransactions()).hasSize(5);
-		assertThat(bankAccount.calculateBalance()).isEqualTo(new BigDecimal("2200.00"));
+		assertThat(bankAccount.calculateBalance()).isEqualTo(new BigDecimal("2200"));
 		// Only the first account transaction of a 100.00 deposit is older than one month.
-		assertThat(bankAccount.getBaselineBalance()).isEqualTo(new BigDecimal("800.00"));
+		assertThat(bankAccount.getBaselineBalance()).isEqualTo(new BigDecimal("800"));
 	}
 
 	@Test

@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Builder
 @Data
@@ -70,7 +71,7 @@ public class BankAccount {
                 null,
                 account.getId(),
                 TransactionType.WITHDRAWAL,
-                Date.valueOf(LocalDate.now()),
+                Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()),
                 withdraw);
         this.accountTransactionsInterval.addAccountTransaction(withdrawTransaction);
 
@@ -90,7 +91,7 @@ public class BankAccount {
                 null,
                 account.getId(),
                 TransactionType.DEPOSIT,
-                Date.valueOf(LocalDate.now()),
+                Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()),
                 deposit);
         this.accountTransactionsInterval.addAccountTransaction(depositTransaction);
         return true;

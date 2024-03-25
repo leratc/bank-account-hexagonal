@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 class AcccountTransactionsTest {
@@ -60,16 +62,19 @@ class AcccountTransactionsTest {
 
 		Assertions.assertThat(account.getAccountTransactionsInterval().getAccountTransactions()).hasSize(3);
 	}
-	private LocalDateTime startDate() {
-		return LocalDateTime.of(2024, 2, 3, 0, 0);
+	private Date startDate() {
+		LocalDateTime localDateTime = LocalDateTime.of(2024, 2, 3, 0, 0);
+		return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 	}
 
-	private LocalDateTime inBetweenDate() {
-		return LocalDateTime.of(2024, 3, 4, 0, 0);
+	private Date inBetweenDate() {
+		LocalDateTime localDateTime = LocalDateTime.of(2024, 3, 4, 0, 0);
+		return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 	}
 
-	private LocalDateTime endDate() {
-		return LocalDateTime.of(2024, 3, 5, 0, 0);
+	private Date endDate() {
+		LocalDateTime localDateTime = LocalDateTime.of(2024, 3, 5, 0, 0);
+		return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 	}
 
 }
