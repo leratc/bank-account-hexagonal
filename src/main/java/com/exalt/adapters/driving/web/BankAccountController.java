@@ -9,12 +9,16 @@ import com.exalt.common.customannotation.WebAdapter;
 import com.exalt.common.exceptions.AuthorizedMaximumBookletBalanceExeeded;
 import com.exalt.common.exceptions.AuthorizedOverdraftAccountBalanceExeeded;
 import com.exalt.common.exceptions.IllegalAmountException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.DataInput;
 import java.math.BigDecimal;
 
 @WebAdapter
@@ -74,9 +78,8 @@ public class BankAccountController {
         }
     }
 
-    @GetMapping(value = "{id}/account-statement/")
-    @ResponseBody BankAccount get(@PathVariable final Long id) {
+    @GetMapping(value = "{id}")
+    BankAccount get(@PathVariable final Long id) {
         return loadBankAccountStatementUseCase.loadBankAccountStatement(id);
     }
-
 }

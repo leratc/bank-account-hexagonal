@@ -1,10 +1,9 @@
 package com.exalt.application.domain;
 
-import com.exalt.application.domain.model.AccountTransactions;
+import com.exalt.application.domain.model.AccountTransactionsInterval;
 import com.exalt.application.domain.model.BankAccount;
 import com.exalt.common.AccountTestData;
 import com.exalt.common.AccountTransactionTestData;
-import com.exalt.common.exceptions.AuthorizedMaximumBookletBalanceExeeded;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +19,7 @@ class BankAccountTest {
 		BankAccount account = AccountTestData.defaultCurrentAccount()
 				.id(accountId)
 				.baselineBalance(BigDecimal.valueOf(555L))
-				.accountTransactions(new AccountTransactions(
+				.accountTransactionsInterval(new AccountTransactionsInterval(
 						Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(999L)).build(),
 								AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
@@ -37,7 +36,7 @@ class BankAccountTest {
 		BankAccount account = AccountTestData.defaultCurrentAccount()
 				.id(accountId)
 				.baselineBalance(BigDecimal.valueOf(555L))
-				.accountTransactions(new AccountTransactions(Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
+				.accountTransactionsInterval(new AccountTransactionsInterval(Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(999L)).build(),
 						AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(1L)).build())))
@@ -46,7 +45,7 @@ class BankAccountTest {
 		boolean success = account.withdrawMoney(account,BigDecimal.valueOf(555L));
 
 		assertThat(success).isTrue();
-		assertThat(account.getAccountTransactions().getAccountTransactions()).hasSize(3);
+		assertThat(account.getAccountTransactionsInterval().getAccountTransactions()).hasSize(3);
 		assertThat(account.calculateBalance()).isEqualTo(BigDecimal.valueOf(1000L));
 	}
 
@@ -56,7 +55,7 @@ class BankAccountTest {
 		BankAccount account = AccountTestData.defaultCurrentAccount()
 				.id(accountId)
 				.baselineBalance(BigDecimal.valueOf(555L))
-				.accountTransactions(new AccountTransactions(Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
+				.accountTransactionsInterval(new AccountTransactionsInterval(Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(999L)).build(),
 						AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(1L)).build())))
@@ -64,7 +63,7 @@ class BankAccountTest {
 		boolean success = account.withdrawMoney(account,BigDecimal.valueOf(2556L));
 
 		assertThat(success).isFalse();
-		assertThat(account.getAccountTransactions().getAccountTransactions()).hasSize(2);
+		assertThat(account.getAccountTransactionsInterval().getAccountTransactions()).hasSize(2);
 		assertThat(account.calculateBalance()).isEqualTo(BigDecimal.valueOf(1555L));
 	}
 
@@ -74,14 +73,14 @@ class BankAccountTest {
 		BankAccount account = AccountTestData.defaultCurrentAccount()
 				.id(accountId)
 				.baselineBalance(BigDecimal.valueOf(555L))
-				.accountTransactions(new AccountTransactions(Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
+				.accountTransactionsInterval(new AccountTransactionsInterval(Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(999L)).build(),
 						AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(1L)).build())))
 				.build();
 		boolean success = account.depositMoney(account,BigDecimal.valueOf(445L));
 		assertThat(success).isTrue();
-		assertThat(account.getAccountTransactions().getAccountTransactions()).hasSize(3);
+		assertThat(account.getAccountTransactionsInterval().getAccountTransactions()).hasSize(3);
 		assertThat(account.calculateBalance()).isEqualTo(BigDecimal.valueOf(2000L));
 	}
 	@Test
@@ -91,7 +90,7 @@ class BankAccountTest {
 				.id(accountId)
 				.baselineBalance(BigDecimal.valueOf(20555L))
 				.maximumDepositAuthorization(BigDecimal.valueOf(22950L))
-				.accountTransactions(new AccountTransactions(Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
+				.accountTransactionsInterval(new AccountTransactionsInterval(Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(1999L)).build(),
 						AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(1L)).build())))
@@ -106,7 +105,7 @@ class BankAccountTest {
 				.id(accountId)
 				.baselineBalance(BigDecimal.valueOf(10555L))
 				.maximumDepositAuthorization(BigDecimal.valueOf(22950L))
-				.accountTransactions(new AccountTransactions(Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
+				.accountTransactionsInterval(new AccountTransactionsInterval(Arrays.asList(AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(1999L)).build(),
 						AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 								.amount(BigDecimal.valueOf(1L)).build())))

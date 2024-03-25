@@ -1,6 +1,7 @@
 package com.exalt.application.domain.model;
 
 import com.exalt.common.commontype.TransactionType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -10,16 +11,16 @@ import java.util.*;
 @Data
 @Builder
 @ToString
-public class AccountTransactions {
+public class AccountTransactionsInterval {
     /**
      * handle the collection of transactions for one account
      */
-    private @Getter List<AccountTransaction> accountTransactions;
+    private @Getter List<AccountTransaction> accountTransactions = new ArrayList<>();
 
     /**
      * The timestamp of the first transaction within this window.
      */
-    public LocalDateTime getStartTimestamp() {
+    public Date getStartTimestamp() {
         return accountTransactions.stream()
                 .min(Comparator.comparing(AccountTransaction::getTransactionDate))
                 .orElseThrow(IllegalStateException::new)
@@ -31,7 +32,7 @@ public class AccountTransactions {
      *
      * @return
      */
-    public LocalDateTime getEndTimestamp() {
+    public Date getEndTimestamp() {
         return accountTransactions.stream()
                 .max(Comparator.comparing(AccountTransaction::getTransactionDate))
                 .orElseThrow(IllegalStateException::new)
@@ -55,16 +56,12 @@ public class AccountTransactions {
         return depositBalance.subtract(withdrawalBalance);
     }
 
-    public AccountTransactions(@NonNull List<AccountTransaction> accountTransactions) {
+    public AccountTransactionsInterval(@NonNull List<AccountTransaction> accountTransactions) {
         this.accountTransactions = accountTransactions;
     }
 
-    public AccountTransactions(@NonNull AccountTransaction... accountTransactions) {
+    public AccountTransactionsInterval(@NonNull AccountTransaction... accountTransactions) {
         this.accountTransactions = new ArrayList<>(Arrays.asList(accountTransactions));
-    }
-
-    public List<AccountTransaction> getAccountTransactions() {
-        return this.accountTransactions;
     }
 
     public void addAccountTransaction(AccountTransaction accountTransaction) {

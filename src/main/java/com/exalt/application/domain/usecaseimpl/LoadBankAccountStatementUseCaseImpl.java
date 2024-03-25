@@ -8,7 +8,7 @@ import jakarta.transaction.Transactional;
 
 @UseCase
 public class LoadBankAccountStatementUseCaseImpl implements LoadBankAccountStatementUseCase {
-    private LoadBankAccountPort loadBankAccountPort;
+    private final LoadBankAccountPort loadBankAccountPort;
 
     public LoadBankAccountStatementUseCaseImpl(LoadBankAccountPort loadBankAccountPort) {
         this.loadBankAccountPort = loadBankAccountPort;

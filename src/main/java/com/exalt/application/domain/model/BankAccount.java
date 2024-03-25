@@ -2,24 +2,26 @@ package com.exalt.application.domain.model;
 
 import com.exalt.common.commontype.AccountType;
 import com.exalt.common.commontype.TransactionType;
-import com.exalt.common.exceptions.AuthorizedMaximumBookletBalanceExeeded;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-@Data
 @Builder
+@Data
 @ToString
+@EqualsAndHashCode
 @AllArgsConstructor
 public class BankAccount {
     @Getter @NonNull private Long id;
     @Getter @NonNull private String firstName;
     @Getter @NonNull private String lastName;
-    @Getter @NonNull private BigDecimal overdraftAmountAuthorization;
-    @Getter private BigDecimal maximumDepositAuthorization = BigDecimal.valueOf(Integer.MAX_VALUE);
+    @Builder.Default
+    @Getter @NonNull private BigDecimal overdraftAmountAuthorization =BigDecimal.ZERO;
+    @Builder.Default
+    @Getter @NonNull private BigDecimal maximumDepositAuthorization = BigDecimal.valueOf(Integer.MAX_VALUE);
     @Getter @NonNull private AccountType accountType;
     /**
      * The baseline balance of the account. This was the balance of the account before the first
@@ -30,8 +32,7 @@ public class BankAccount {
     /**
      * The period of latest transactions on this account.
      */
-    @Builder.Default
-    @Getter @Setter private AccountTransactions accountTransactions;
+    @Getter @Setter private AccountTransactionsInterval accountTransactionsInterval;
 
 
     public BankAccount(Long id, String firstName, String lastName, BigDecimal overdraftAmountAuthorization,BigDecimal maximumDepositAuthorization, AccountType accountType, BigDecimal baselineBalance) {
@@ -50,7 +51,7 @@ public class BankAccount {
      * @return
      */
     public BigDecimal calculateBalance() {
-        return this.baselineBalance.add(this.accountTransactions.calculateBalance(this.id));
+        return this.baselineBalance.add(this.accountTransactionsInterval.calculateBalance(this.id));
     }
     private boolean isWithdrawalAuthorized(BankAccount account, BigDecimal withdraw) {
         BigDecimal resultingOperation = this.calculateBalance().add(this.overdraftAmountAuthorization).subtract(withdraw);
@@ -69,9 +70,9 @@ public class BankAccount {
                 null,
                 account.getId(),
                 TransactionType.WITHDRAWAL,
-                LocalDateTime.now(),
+                Date.valueOf(LocalDate.now()),
                 withdraw);
-        this.accountTransactions.addAccountTransaction(withdrawTransaction);
+        this.accountTransactionsInterval.addAccountTransaction(withdrawTransaction);
 
         return true;
     }
@@ -89,9 +90,9 @@ public class BankAccount {
                 null,
                 account.getId(),
                 TransactionType.DEPOSIT,
-                LocalDateTime.now(),
+                Date.valueOf(LocalDate.now()),
                 deposit);
-        this.accountTransactions.addAccountTransaction(depositTransaction);
+        this.accountTransactionsInterval.addAccountTransaction(depositTransaction);
         return true;
     }
 }

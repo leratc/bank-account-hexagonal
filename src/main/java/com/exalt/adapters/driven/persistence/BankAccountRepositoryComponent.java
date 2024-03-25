@@ -7,14 +7,13 @@ import com.exalt.adapters.driven.persistence.jparepository.BankAccountRepository
 import com.exalt.adapters.driven.persistence.mapper.AccountTransactionMapper;
 import com.exalt.adapters.driven.persistence.mapper.BankAccountMapper;
 import com.exalt.application.domain.model.AccountTransaction;
-import com.exalt.application.domain.model.AccountTransactions;
+import com.exalt.application.domain.model.AccountTransactionsInterval;
 import com.exalt.application.domain.model.BankAccount;
 import com.exalt.application.port.driven.CreateBankAccountPort;
 import com.exalt.application.port.driven.LoadBankAccountPort;
 import com.exalt.application.port.driven.UpdateAccountStatePort;
 import com.exalt.BankConfigurationProperties;
 import com.exalt.common.commontype.AccountType;
-import com.exalt.common.commontype.TransactionType;
 import com.exalt.common.customannotation.PersistenceAdapter;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -75,13 +74,13 @@ public class BankAccountRepositoryComponent
         List<AccountTransaction> transactionsDomain = transactionsEntity.stream().map(accountTransactionMapper::toDomain)
                 .sorted(Comparator.comparing(AccountTransaction::getTransactionDate, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
-        bankAccount.setAccountTransactions(new AccountTransactions(transactionsDomain));
+        bankAccount.setAccountTransactionsInterval(new AccountTransactionsInterval(transactionsDomain));
         return bankAccount;
     }
 
     @Override
     public void updateActivities(BankAccount account) {
-        for (AccountTransaction accountTransaction : account.getAccountTransactions().getAccountTransactions()) {
+        for (AccountTransaction accountTransaction : account.getAccountTransactionsInterval().getAccountTransactions()) {
             if (accountTransaction.getId() == null) {
                 accountTransactionRepository.save(accountTransactionMapper.toEntity(accountTransaction));
             }
@@ -91,6 +90,10 @@ public class BankAccountRepositoryComponent
     @Override
     public BankAccount createAccount(BankAccount account) {
         BankAccountEntity bankAccountEntityCreated = bankAccountRepository.save(bankAccountMapper.toEntity(account));
-        return bankAccountMapper.toDomain(bankAccountEntityCreated);
+
+        BankAccount newAccount = bankAccountMapper.toDomain(bankAccountEntityCreated);
+        // belong to application parameter, not the entity
+        newAccount.setMaximumDepositAuthorization(account.getMaximumDepositAuthorization());
+        return newAccount;
     }
 }

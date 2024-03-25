@@ -1,6 +1,8 @@
 package com.exalt.application.domain;
 import com.exalt.application.domain.model.AccountTransaction;
-import com.exalt.application.domain.model.AccountTransactions;
+import com.exalt.application.domain.model.AccountTransactionsInterval;
+import com.exalt.application.domain.model.BankAccount;
+import com.exalt.common.AccountTestData;
 import com.exalt.common.AccountTransactionTestData;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,8 +20,8 @@ class AcccountTransactionsTest {
 				AccountTransactionTestData.defaultDepositTransaction().transactionDate(startDate()).build(),
 				AccountTransactionTestData.defaultDepositTransaction().transactionDate(inBetweenDate()).build(),
 				AccountTransactionTestData.defaultDepositTransaction().transactionDate(endDate()).build());
-		AccountTransactions accountTransactions = new AccountTransactions(transactions);
-		Assertions.assertThat(accountTransactions.getStartTimestamp()).isEqualTo(startDate());
+		AccountTransactionsInterval accountTransactionsInterval = new AccountTransactionsInterval(transactions);
+		Assertions.assertThat(accountTransactionsInterval.getStartTimestamp()).isEqualTo(startDate());
 	}
 
 	@Test
@@ -28,15 +30,15 @@ class AcccountTransactionsTest {
 						AccountTransactionTestData.defaultDepositTransaction().transactionDate(startDate()).build(),
 						AccountTransactionTestData.defaultDepositTransaction().transactionDate(inBetweenDate()).build(),
 						AccountTransactionTestData.defaultDepositTransaction().transactionDate(endDate()).build());
-		AccountTransactions accountTransactions = new AccountTransactions(transactions);
-		Assertions.assertThat(accountTransactions.getEndTimestamp()).isEqualTo(endDate());
+		AccountTransactionsInterval accountTransactionsInterval = new AccountTransactionsInterval(transactions);
+		Assertions.assertThat(accountTransactionsInterval.getEndTimestamp()).isEqualTo(endDate());
 	}
 
 	@Test
 	void calculatesBalance() {
 		Long accountId=1L;
 		// the other way of initialize
-		AccountTransactions accountTransactions = new AccountTransactions(
+		AccountTransactionsInterval accountTransactionsInterval = new AccountTransactionsInterval(
 					AccountTransactionTestData.defaultWithdrawalTransaction().accountId(accountId)
 							.amount(BigDecimal.valueOf(999L)).build(),
 					AccountTransactionTestData.defaultWithdrawalTransaction().accountId(accountId)
@@ -44,9 +46,20 @@ class AcccountTransactionsTest {
 					AccountTransactionTestData.defaultDepositTransaction().accountId(accountId)
 							.amount(BigDecimal.valueOf(500L)).build()
 				);
-		Assertions.assertThat(accountTransactions.calculateBalance(accountId)).isEqualTo(BigDecimal.valueOf(-500));
+		Assertions.assertThat(accountTransactionsInterval.calculateBalance(accountId)).isEqualTo(BigDecimal.valueOf(-500));
 	}
+	@Test
+	void testAddTransaction() {
+		Long accountId = 1L;
+		BankAccount account = AccountTestData.defaultCurrentAccount().id(accountId).build();
+		// 2 initial transactions
+		AccountTransaction accountTransaction = AccountTransactionTestData.defaultWithdrawalTransaction().accountId(accountId)
+						.amount(BigDecimal.valueOf(999L)).build();
+		// one more transaction
+		account.getAccountTransactionsInterval().addAccountTransaction(accountTransaction);
 
+		Assertions.assertThat(account.getAccountTransactionsInterval().getAccountTransactions()).hasSize(3);
+	}
 	private LocalDateTime startDate() {
 		return LocalDateTime.of(2024, 2, 3, 0, 0);
 	}

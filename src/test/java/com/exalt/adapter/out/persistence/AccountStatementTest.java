@@ -6,7 +6,7 @@ import com.exalt.adapters.driven.persistence.jparepository.AccountTransactionRep
 import com.exalt.adapters.driven.persistence.jparepository.BankAccountRepository;
 import com.exalt.adapters.driven.persistence.mapper.AccountTransactionMapperImpl;
 import com.exalt.adapters.driven.persistence.mapper.BankAccountMapperImpl;
-import com.exalt.application.domain.model.AccountTransactions;
+import com.exalt.application.domain.model.AccountTransactionsInterval;
 import com.exalt.application.domain.model.BankAccount;
 import com.exalt.common.AccountTestData;
 import com.exalt.common.AccountTransactionTestData;
@@ -38,7 +38,7 @@ class AccountStatementTest {
 	@Sql("AccountStatementTest.sql")
 	void loadsAccount() {
 		BankAccount bankAccount = adapterUnderTest.loadAccount(1L);
-		assertThat(bankAccount.getAccountTransactions().getAccountTransactions()).hasSize(5);
+		assertThat(bankAccount.getAccountTransactionsInterval().getAccountTransactions()).hasSize(5);
 		assertThat(bankAccount.calculateBalance()).isEqualTo(new BigDecimal("1700.00"));
 		// Only the first account transaction of a 100.00 deposit is older than one month.
 		assertThat(bankAccount.getBaselineBalance()).isEqualTo(new BigDecimal("100.00"));
@@ -49,7 +49,7 @@ class AccountStatementTest {
 		BankAccount bankAccount = adapterUnderTest.loadAccount(2L);
 		// test if BankConfigurationProperties provide the value of the depositBookletThreshold property (22950).
 		assertThat(bankAccount.getMaximumDepositAuthorization()).isEqualTo(new BigDecimal("22950"));
-		assertThat(bankAccount.getAccountTransactions().getAccountTransactions()).hasSize(5);
+		assertThat(bankAccount.getAccountTransactionsInterval().getAccountTransactions()).hasSize(5);
 		assertThat(bankAccount.calculateBalance()).isEqualTo(new BigDecimal("2200.00"));
 		// Only the first account transaction of a 100.00 deposit is older than one month.
 		assertThat(bankAccount.getBaselineBalance()).isEqualTo(new BigDecimal("800.00"));
@@ -59,7 +59,7 @@ class AccountStatementTest {
 	void updatesTransactions() {
 		BankAccount account = AccountTestData.defaultCurrentAccount()
 				.baselineBalance(BigDecimal.valueOf(555L))
-				.accountTransactions(new AccountTransactions(
+				.accountTransactionsInterval(new AccountTransactionsInterval(
 						AccountTransactionTestData.defaultDepositTransaction()
 								.id(null)
 								.amount(BigDecimal.valueOf(1)).build()))

@@ -1,7 +1,7 @@
 package com.exalt.common;
 
 import com.exalt.application.domain.model.AccountTransaction;
-import com.exalt.application.domain.model.AccountTransactions;
+import com.exalt.application.domain.model.AccountTransactionsInterval;
 import com.exalt.application.domain.model.BankAccount;
 import com.exalt.common.commontype.AccountType;
 import java.math.BigDecimal;
@@ -17,7 +17,7 @@ public class AccountTestData {
 		return BankAccount.builder().id(42L).firstName("Jean").lastName("Dujardin").accountType(AccountType.CURRENT)
 				.baselineBalance(BigDecimal.valueOf(999L))
 				.overdraftAmountAuthorization(BigDecimal.valueOf(1000L))
-				.accountTransactions(new AccountTransactions(accountTransactions));
+				.accountTransactionsInterval(new AccountTransactionsInterval(accountTransactions));
 	}
 
 	public static BankAccount.BankAccountBuilder defaultBookletAccount() {
@@ -27,7 +27,7 @@ public class AccountTestData {
 		return BankAccount.builder().id(42L).firstName("Albert").lastName("Dupontel").accountType(AccountType.BOOKLET)
 				.baselineBalance(BigDecimal.valueOf(999L))
 				.overdraftAmountAuthorization(BigDecimal.ZERO)
-				.accountTransactions(new AccountTransactions(accountTransactions));
+				.accountTransactionsInterval(new AccountTransactionsInterval(accountTransactions));
 
 	}
 
