@@ -15,6 +15,7 @@ import java.time.ZoneId;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 public class BankAccount {
     @Getter @NonNull private Long id;
     @Getter @NonNull private String firstName;

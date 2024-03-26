@@ -93,6 +93,7 @@ public class BankAccountRepositoryComponent
 
         BankAccount newAccount = bankAccountMapper.toDomain(bankAccountEntityCreated);
         // belong to application parameter, not the entity
+        newAccount.setBaselineBalance(account.getBaselineBalance());
         newAccount.setMaximumDepositAuthorization(account.getMaximumDepositAuthorization());
         return newAccount;
     }

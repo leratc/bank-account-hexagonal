@@ -4,11 +4,14 @@ import com.exalt.application.domain.model.BankAccount;
 import com.exalt.application.port.driven.LoadBankAccountPort;
 import com.exalt.application.port.driven.UpdateAccountStatePort;
 import com.exalt.common.exceptions.AuthorizedOverdraftAccountBalanceExeeded;
+import com.exalt.common.exceptions.IllegalAmountException;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +40,14 @@ class WithdrawUseCaseImplTest {
 				() -> withdrawUseCaseImpl.withdrawMoney(account.getId(),BigDecimal.valueOf(500L)));
 		Assertions.assertEquals(exception.getMessage(),"Operation denied because withdraw amount exceed authorized overdraft for the account.");
 	}
-
+	@Test
+	public void withdrawNegativeAmountValidationFails() {
+		BankAccount account = givenAccount();
+		givenWithdrawalWillFail(account);
+		Exception exception = Assertions.assertThrows(IllegalAmountException.class,
+				() -> withdrawUseCaseImpl.withdrawMoney(account.getId(),BigDecimal.valueOf(-500L)));
+		Assertions.assertEquals(exception.getMessage(),"Amount should be positive");
+	}
 	private void thenAccountHasBeenUpdated(Long... accountIds){
 		ArgumentCaptor<BankAccount> accountCaptor = ArgumentCaptor.forClass(BankAccount.class);
 		then(updateAccountStatePort).should(times(accountIds.length))

@@ -1,4 +1,4 @@
-package com.exalt.adapter.out.persistence;
+package com.exalt.adapter.driven.persistence;
 import com.exalt.BankConfigurationProperties;
 import com.exalt.adapters.driven.persistence.BankAccountRepositoryComponent;
 import com.exalt.adapters.driven.persistence.jpaentity.AccountTransactionEntity;

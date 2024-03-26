@@ -4,6 +4,7 @@ import com.exalt.application.domain.model.BankAccount;
 import com.exalt.application.port.driven.LoadBankAccountPort;
 import com.exalt.application.port.driven.UpdateAccountStatePort;
 import com.exalt.common.exceptions.AuthorizedMaximumBookletBalanceExeeded;
+import com.exalt.common.exceptions.IllegalAmountException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -38,7 +39,14 @@ class DepositUseCaseImplTest {
 				() -> depositUseCaseImpl.depositMoney(account.getId(),BigDecimal.valueOf(500L)));
 		Assertions.assertEquals(exception.getMessage(),"Operation denied because deposit limit has been reached for the booklet account");
 	}
-
+	@Test
+	public void depositNegativeAmountValidationFails() {
+		BankAccount account = givenAccount();
+		givenDepositMoneyWillFail(account);
+		Exception exception = Assertions.assertThrows(IllegalAmountException.class,
+				() -> depositUseCaseImpl.depositMoney(account.getId(),BigDecimal.valueOf(-500L)));
+		Assertions.assertEquals(exception.getMessage(),"Amount should be positive");
+	}
 	private void thenAccountHasBeenUpdated(Long... accountIds){
 		ArgumentCaptor<BankAccount> accountCaptor = ArgumentCaptor.forClass(BankAccount.class);
 		then(updateAccountStatePort).should(times(accountIds.length))

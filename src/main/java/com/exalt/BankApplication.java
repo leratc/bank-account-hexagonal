@@ -17,12 +17,4 @@ public class BankApplication {
     public static void main(final String[] args) {
         SpringApplication.run(BankApplication.class, args);
     }
-
-    @Bean
-    public CommandLineRunner bootstrapData(BankAccountRepositoryComponent repository) {
-        return (args) -> {
-
-
-        };
-    }
 }
